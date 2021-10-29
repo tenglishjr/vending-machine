@@ -1,0 +1,21 @@
+version: '3.2'
+
+services:
+  flyway:
+    image: flyway/flyway:8.0.2-alpine
+    container_name: flyway_container
+    command: -configFiles=/flyway/conf/flyway.conf -locations=filesystem:/flyway/sql -connectRetries=60 migrate
+    volumes:
+      - ${PWD}/src/main/resources/sql:/flyway/sql
+      - ${PWD}:/flyway/conf
+    depends_on:
+      - db
+  db:
+    image: postgres:13.4-alpine
+    container_name: vending_machine_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=vendingAdmin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=vendingMachineDB

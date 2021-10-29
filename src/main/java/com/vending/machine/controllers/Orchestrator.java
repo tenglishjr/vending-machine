@@ -16,7 +16,7 @@ public class Orchestrator {
         BigDecimal totalValue = new BigDecimal("0.0");
 
         for (Coin coin : coins) {
-            if (validateCoin(coin))
+            if (validateCoins(coin))
                 totalValue = totalValue.add(BigDecimal.valueOf(coin.getValue()));
         }
 
@@ -26,25 +26,20 @@ public class Orchestrator {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
-    private boolean validateCoin(Coin coin) {
-        if (coin.getDiameter() == Coin.DOLLAR.getDiameter() &&
-        coin.getWeight() == Coin.DOLLAR.getWeight() &&
-        coin.getValue() == Coin.DOLLAR.getValue()) {
-            return true;
-        } else if (coin.getDiameter() == Coin.QUARTER.getDiameter() &&
-        coin.getWeight() == Coin.QUARTER.getWeight() &&
-        coin.getValue() == Coin.QUARTER.getValue()) {
-            return true;
-        } else if (coin.getDiameter() == Coin.DIME.getDiameter() &&
-        coin.getWeight() == Coin.DIME.getWeight() &&
-        coin.getValue() == Coin.DIME.getValue()) {
-            return true;
-        } else if (coin.getDiameter() == Coin.NICKEL.getDiameter() &&
-        coin.getWeight() == Coin.NICKEL.getWeight() &&
-        coin.getValue() == Coin.NICKEL.getValue()) {
-            return true;
-        } else {
-            return false;
-        }
+    private boolean validateCoins(Coin coin) {
+//        return validateCoin(coin, Coin.DOLLAR) ||
+//        validateCoin(coin, Coin.QUARTER) ||
+//        validateCoin(coin, Coin.DIME) ||
+//        validateCoin(coin, Coin.NICKEL);
+
+        return Coin.VALID_COINS.stream().anyMatch(x -> validateCoin(coin, x));
+//        return Coin.VALID_COINS.stream().filter(x -> x >= new BigDecimal("5.01"));
+//        List<Double> weights = Coin.VALID_COINS.stream().map(x -> x.getWeight()).collect(Collectors.toList());
+    }
+
+    private boolean validateCoin(Coin coin, Coin validCoin) {
+        return coin.getDiameter() == validCoin.getDiameter() &&
+                coin.getWeight() == validCoin.getWeight() &&
+                coin.getValue() == validCoin.getValue();
     }
 }
