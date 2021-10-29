@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/vending-machine")
 public class VendingMachineController {
@@ -20,9 +22,9 @@ public class VendingMachineController {
     }
 
     @PostMapping("/purchase")
-    public PurchaseResponse getProduct(@RequestBody Coin coin) {
+    public PurchaseResponse getProduct(@RequestBody List<Coin> coins) {
         PurchaseResponse response = new PurchaseResponse();
-        response.setProduct(orchestrator.purchase(coin));
+        response.setProduct(orchestrator.purchase(coins));
         return response;
     }
 }

@@ -6,7 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrchestratorTest {
 
@@ -23,9 +26,9 @@ public class OrchestratorTest {
     @Test
     public void purchaseShouldReturnProductWhenProvidedDollar() {
         // Arrange
-        Coin dollar = new Coin(Coin.DOLLAR.getWeight(), Coin.DOLLAR.getDiameter(), Coin.DOLLAR.getValue());
+        var coins = List.of(Coin.DOLLAR);
         // Act
-        Product actual = orchestrator.purchase(dollar);
+        Product actual = orchestrator.purchase(coins);
         // Assert
         assertEquals("Dr. Pepper", actual.getName());
     }
@@ -33,8 +36,103 @@ public class OrchestratorTest {
     @Test(expected = ResponseStatusException.class)
     public void purchaseShouldReturnNoProductWhenProvidedInvalidCurrency() {
         // Arrange
-        Coin quarter = new Coin(24.3, 5.67, 0.25);
+        Coin badCoin = new Coin(24.3, 1.67, 0.25);
+        var coins = List.of(badCoin);
         // Act
-        Product actual = orchestrator.purchase(quarter);
+        orchestrator.purchase(coins);
+    }
+
+    @Test
+    public void purchase_shouldReturnProductWhenProvidedMultipleQuartersEqualToDollar() {
+
+        List<Coin> coins = Arrays.asList(
+                Coin.QUARTER,
+                Coin.QUARTER,
+                Coin.QUARTER,
+                Coin.QUARTER
+        );
+
+        Product product = orchestrator.purchase(coins);
+
+        assertEquals("Dr. Pepper", product.getName());
+    }
+
+    @Test
+    public void purchase_shouldReturnProductWhenProvidedMultipleDimesEqualToDollar() {
+        List<Coin> coins = Arrays.asList(
+                Coin.DIME,
+                Coin.DIME,
+                Coin.DIME,
+                Coin.DIME,
+                Coin.DIME,
+                Coin.DIME,
+                Coin.DIME,
+                Coin.DIME,
+                Coin.DIME,
+                Coin.DIME
+        );
+
+        Product product = orchestrator.purchase(coins);
+
+        assertEquals("Dr. Pepper", product.getName());
+    }
+
+    @Test
+    public void purchase_shouldReturnProductWhenProvidedMultipleNickelsEqualToDollar() {
+        List<Coin> coins = Arrays.asList(
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL
+        );
+
+        Product product = orchestrator.purchase(coins);
+
+        assertEquals("Dr. Pepper", product.getName());
+    }
+
+    @Test
+    public void purchase_shouldReturnProductWhenProvidedMixtureOfCoinsEqualToDollar() {
+        List<Coin> coins = Arrays.asList(
+                Coin.QUARTER,
+                Coin.QUARTER,
+                Coin.QUARTER,
+                Coin.DIME,
+                Coin.NICKEL,
+                Coin.NICKEL,
+                Coin.NICKEL
+        );
+
+        Product product = orchestrator.purchase(coins);
+
+        assertEquals("Dr. Pepper", product.getName());
+    }
+
+    @Test(expected = ResponseStatusException.class)
+    public void purchase_shouldReturn400BadRequestWhenProvidedCoinsNotEqualToDollar() {
+        List<Coin> coins = Arrays.asList(
+                Coin.QUARTER,
+                Coin.QUARTER,
+                Coin.DIME,
+                Coin.NICKEL
+        );
+
+        orchestrator.purchase(coins);
     }
 }

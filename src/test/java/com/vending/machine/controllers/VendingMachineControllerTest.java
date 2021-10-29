@@ -6,6 +6,8 @@ import com.vending.machine.models.PurchaseResponse;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class VendingMachineControllerTest {
@@ -16,21 +18,21 @@ public class VendingMachineControllerTest {
     public void getProductShouldCallOrchestrator() {
         orchestrator = Mockito.mock(Orchestrator.class);
         VendingMachineController controller = new VendingMachineController(orchestrator);
-        Coin coin = Coin.DOLLAR;
+        var coins = List.of(Coin.DOLLAR);
 
-        PurchaseResponse actual = controller.getProduct(coin);
+        PurchaseResponse actual = controller.getProduct(coins);
 
-        Mockito.verify(orchestrator, Mockito.times(1)).purchase(coin);
+        Mockito.verify(orchestrator, Mockito.times(1)).purchase(coins);
     }
 
     @Test
     public void getProductShouldReturnProduct() {
         orchestrator = Mockito.mock(Orchestrator.class);
         VendingMachineController controller = new VendingMachineController(orchestrator);
-        Coin coin = Coin.DOLLAR;
-        Mockito.when(orchestrator.purchase(coin)).thenReturn(new Product("Dr. Pepper"));
+        var coins = List.of(Coin.DOLLAR);
+        Mockito.when(orchestrator.purchase(coins)).thenReturn(new Product("Dr. Pepper"));
 
-        PurchaseResponse actual = controller.getProduct(coin);
+        PurchaseResponse actual = controller.getProduct(coins);
 
         assertEquals("Dr. Pepper", actual.getProduct().getName());
     }
