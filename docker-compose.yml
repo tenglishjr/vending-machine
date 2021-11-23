@@ -4,10 +4,9 @@ services:
   flyway:
     image: flyway/flyway:8.0.2-alpine
     container_name: flyway_container
-    command: -configFiles=/flyway/conf/flyway.conf -locations=filesystem:/flyway/sql -connectRetries=60 migrate
+    command: -url=jdbc:postgresql://db:5432/vendingMachineDB -connectRetries=60 -user=vendingAdmin -password=admin migrate
     volumes:
       - ${PWD}/src/main/resources/sql:/flyway/sql
-      - ${PWD}:/flyway/conf
     depends_on:
       - db
   db:
